@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
-import { Heart, Upload, DollarSign, Eye, TrendingUp, Plus } from "lucide-react"
+import { Heart, Upload, DollarSign, Eye, TrendingUp, Plus, Sparkles } from "lucide-react"
 
 export const dynamic = "force-dynamic"
 
@@ -10,21 +10,19 @@ export default async function DashboardPage() {
 
   if (!user) {
     return (
-      <div className="text-center py-16 space-y-4">
-        <Heart className="w-12 h-12 text-zinc-600 mx-auto" />
-        <h2 className="text-xl font-semibold">Creator Dashboard</h2>
-        <p className="text-zinc-500">Sign in to manage your content and earnings</p>
-        <Link
-          href="/login"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-medium hover:from-pink-500 hover:to-purple-500 transition-all"
-        >
+      <div className="text-center py-20 space-y-6 animate-bounce-in">
+        <div className="w-16 h-16 rounded-full bg-[#e040a0]/10 flex items-center justify-center mx-auto">
+          <Heart className="w-8 h-8 text-[#e040a0]" />
+        </div>
+        <h2 className="text-2xl font-bold">Creator Studio</h2>
+        <p className="text-[#b8a9d4]">Sign in to manage your content and earnings</p>
+        <Link href="/login" className="btn-pill btn-pink px-8 py-3">
           Sign In
         </Link>
       </div>
     )
   }
 
-  // Get user's creator profile
   const { data: profile } = await supabase
     .from("profiles")
     .select("id")
@@ -53,18 +51,15 @@ export default async function DashboardPage() {
   const totalPurchases = purchases?.length || 0
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-bounce-in">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-zinc-500 mt-1">Manage your content and earnings</p>
+          <h1 className="text-3xl font-bold gradient-pink-purple">Studio</h1>
+          <p className="text-[#b8a9d4] mt-1">Manage your content and earnings</p>
         </div>
         {creatorProfile && (
-          <Link
-            href="/dashboard/upload"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-medium hover:from-pink-500 hover:to-purple-500 transition-all"
-          >
+          <Link href="/dashboard/upload" className="btn-pill btn-pink">
             <Plus className="w-4 h-4" />
             Upload Content
           </Link>
@@ -74,68 +69,70 @@ export default async function DashboardPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Earnings", value: `${(totalEarnings / 1_000_000).toFixed(2)} USDC`, icon: DollarSign, color: "text-green-400" },
-          { label: "Content", value: content?.length || 0, icon: Eye, color: "text-blue-400" },
-          { label: "Purchases", value: totalPurchases, icon: TrendingUp, color: "text-purple-400" },
-          { label: "Views", value: totalViews, icon: Eye, color: "text-yellow-400" },
-        ].map((stat) => (
-          <div key={stat.label} className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 space-y-2">
+          { label: "Earnings", value: `${(totalEarnings / 1_000_000).toFixed(2)} USDC`, icon: DollarSign, color: "text-[#e040a0]" },
+          { label: "Content", value: content?.length || 0, icon: Eye, color: "text-[#7c52aa]" },
+          { label: "Purchases", value: totalPurchases, icon: TrendingUp, color: "text-[#0096cc]" },
+          { label: "Views", value: totalViews, icon: Eye, color: "text-[#e040a0]" },
+        ].map((stat, i) => (
+          <div key={stat.label} className="card p-5 space-y-2" style={{ animationDelay: `${0.05 * i}s` }}>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-zinc-500">{stat.label}</span>
+              <span className="text-sm font-medium text-[#b8a9d4]">{stat.label}</span>
               <stat.icon className={`w-4 h-4 ${stat.color}`} />
             </div>
-            <p className="text-2xl font-bold">{stat.value}</p>
+            <p className="text-2xl font-bold text-[#faf5ff]">{stat.value}</p>
           </div>
         ))}
       </div>
 
-      {/* Setup creator profile or show content */}
+      {/* Content area */}
       {!creatorProfile ? (
-        <div className="p-8 rounded-2xl bg-zinc-900/30 border border-zinc-800 text-center space-y-4">
-          <Upload className="w-10 h-10 text-zinc-600 mx-auto" />
-          <h2 className="text-xl font-semibold">Become a Creator</h2>
-          <p className="text-zinc-500 max-w-md mx-auto">
+        <div className="card p-10 text-center space-y-4">
+          <div className="w-14 h-14 rounded-full bg-[#7c52aa]/10 flex items-center justify-center mx-auto">
+            <Upload className="w-7 h-7 text-[#7c52aa]" />
+          </div>
+          <h2 className="text-xl font-bold">Become a Creator</h2>
+          <p className="text-[#b8a9d4] max-w-md mx-auto text-sm">
             Set up your creator profile to start uploading content and earning USDC via x402 micropayments on Arc.
           </p>
-          <Link
-            href="/dashboard/setup"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-medium hover:from-pink-500 hover:to-purple-500 transition-all"
-          >
-            <Heart className="w-4 h-4" />
+          <Link href="/dashboard/setup" className="btn-pill btn-purple px-8 py-3 inline-flex">
+            <Sparkles className="w-4 h-4" />
             Set Up Creator Profile
           </Link>
         </div>
       ) : content?.length === 0 ? (
-        <div className="p-8 rounded-2xl bg-zinc-900/30 border border-zinc-800 text-center space-y-4">
-          <Upload className="w-10 h-10 text-zinc-600 mx-auto" />
-          <h2 className="text-xl font-semibold">No Content Yet</h2>
-          <p className="text-zinc-500">Upload your first piece of x402-gated content</p>
-          <Link
-            href="/dashboard/upload"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-medium hover:from-pink-500 hover:to-purple-500 transition-all"
-          >
+        <div className="card p-10 text-center space-y-4">
+          <div className="w-14 h-14 rounded-full bg-[#0096cc]/10 flex items-center justify-center mx-auto">
+            <Upload className="w-7 h-7 text-[#0096cc]" />
+          </div>
+          <h2 className="text-xl font-bold">No Content Yet</h2>
+          <p className="text-[#b8a9d4] text-sm">Upload your first piece of x402-gated content</p>
+          <Link href="/dashboard/upload" className="btn-pill btn-pink px-8 py-3 inline-flex">
             <Upload className="w-4 h-4" />
             Upload First Content
           </Link>
         </div>
       ) : (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold">Your Content</h2>
+          <h2 className="text-lg font-bold text-[#faf5ff]">Your Content</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {content?.map((item) => (
-              <div key={item.id} className="p-4 rounded-xl bg-zinc-900/50 border border-zinc-800 space-y-2">
+            {content?.map((item, i) => (
+              <div key={item.id} className="card p-4 space-y-2" style={{ animationDelay: `${0.05 * i}s` }}>
                 <div className="flex items-center justify-between">
-                  <span className="capitalize text-xs px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">
-                    {item.content_type}
-                  </span>
-                  <span className="text-sm text-pink-400 font-medium">
+                  <span className="badge badge-purple text-[10px] px-2.5 py-0.5 capitalize">{item.content_type}</span>
+                  <span className="text-sm font-bold text-[#e040a0]">
                     {(item.price_usdc / 1_000_000).toFixed(2)} USDC
                   </span>
                 </div>
-                <h3 className="font-medium truncate">{item.title}</h3>
-                <div className="flex items-center gap-3 text-xs text-zinc-500">
-                  <span>{item.view_count || 0} views</span>
-                  <span>{item.purchase_count || 0} purchases</span>
+                <h3 className="font-bold text-[#faf5ff] truncate">{item.title}</h3>
+                <div className="flex items-center gap-4 text-xs text-[#7a6b99] font-medium">
+                  <span className="flex items-center gap-1">
+                    <Eye className="w-3 h-3" />
+                    {item.view_count || 0} views
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <DollarSign className="w-3 h-3" />
+                    {item.purchase_count || 0} purchases
+                  </span>
                 </div>
               </div>
             ))}

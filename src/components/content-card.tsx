@@ -1,7 +1,14 @@
 "use client"
 
-import { Lock, Eye, DollarSign } from "lucide-react"
+import { Lock, Eye, DollarSign, Play, Image, Music, FileText } from "lucide-react"
 import type { ReactNode } from "react"
+
+const typeIcons: Record<string, ReactNode> = {
+  image: <Image className="w-5 h-5" />,
+  video: <Play className="w-5 h-5" />,
+  audio: <Music className="w-5 h-5" />,
+  text: <FileText className="w-5 h-5" />,
+}
 
 interface ContentCardProps {
   id: string
@@ -11,7 +18,7 @@ interface ContentCardProps {
   previewUrl?: string
   viewCount?: number
   creatorName?: string
-  action?: ReactNode
+  purchaseCount?: number
 }
 
 export function ContentCard({
@@ -22,14 +29,17 @@ export function ContentCard({
   previewUrl,
   viewCount,
   creatorName,
-  action,
+  purchaseCount,
 }: ContentCardProps) {
   const isFree = priceUsdc === 0
 
   return (
-    <div className="group rounded-xl overflow-hidden bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 transition-all">
-      {/* Preview */}
-      <a href={`/content/${id}`} className="block relative aspect-[4/3] overflow-hidden">
+    <a
+      href={`/content/${id}`}
+      className="card group overflow-hidden !p-0"
+    >
+      {/* Preview area */}
+      <div className="relative aspect-[4/3] overflow-hidden">
         {previewUrl ? (
           <img
             src={previewUrl}
@@ -37,48 +47,58 @@ export function ContentCard({
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 flex items-center justify-center">
-            {contentType === "image" && <Eye className="w-8 h-8 text-zinc-600" />}
-            {contentType === "video" && (
-              <svg className="w-8 h-8 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            )}
+          <div className="w-full h-full bg-gradient-to-br from-[#1a1425] to-[#221a33] flex items-center justify-center">
+            <div className="text-[#7a6b99] opacity-50">
+              {typeIcons[contentType] || <Eye className="w-8 h-8" />}
+            </div>
           </div>
         )}
 
-        {/* Price badge */}
-        <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-lg bg-black/60 backdrop-blur-sm text-xs font-medium">
-          {!isFree ? (
-            <>
-              <Lock className="w-3 h-3 text-pink-400" />
-              <span className="text-pink-300">{priceUsdc.toFixed(2)} USDC</span>
-            </>
-          ) : (
-            <span className="text-green-400">Free</span>
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0f0b14] via-transparent to-transparent" />
+
+        {/* Top badges */}
+        <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+          <span className="badge badge-purple capitalize">
+            {typeIcons[contentType]}
+            <span className="ml-1">{contentType}</span>
+          </span>
+          {!isFree && (
+            <span className="badge badge-pink">
+              <Lock className="w-3 h-3" />
+              <span>{priceUsdc.toFixed(2)} USDC</span>
+            </span>
+          )}
+          {isFree && (
+            <span className="badge badge-blue">
+              Free
+            </span>
           )}
         </div>
 
-        {/* Type badge */}
-        <div className="absolute top-2 left-2 px-2 py-1 rounded-lg bg-black/60 backdrop-blur-sm text-xs text-zinc-400 capitalize">
-          {contentType}
+        {/* Title on overlay */}
+        <div className="absolute bottom-3 left-3 right-3">
+          <h3 className="text-sm font-bold text-white truncate drop-shadow-lg">
+            {title}
+          </h3>
         </div>
-      </a>
+      </div>
 
-      {/* Info */}
-      <div className="p-3 space-y-1">
-        <h3 className="text-sm font-medium text-zinc-100 truncate">{title}</h3>
-        <div className="flex items-center justify-between text-xs text-zinc-500">
+      {/* Stats bar */}
+      <div className="px-3 py-2.5 flex items-center justify-between text-xs text-[#7a6b99] font-medium">
+        <div className="flex items-center gap-3">
           {creatorName && <span>{creatorName}</span>}
-          {viewCount !== undefined && (
+          {viewCount !== undefined && viewCount > 0 && (
             <span className="flex items-center gap-1">
               <Eye className="w-3 h-3" />
               {viewCount}
             </span>
           )}
         </div>
+        {purchaseCount !== undefined && purchaseCount > 0 && (
+          <span className="text-[#e040a0]">{purchaseCount} unlocked</span>
+        )}
       </div>
-    </div>
+    </a>
   )
 }

@@ -19,43 +19,39 @@ export default async function ContentPage({ params }: { params: Promise<{ id: st
   if (!content) notFound()
 
   const priceUsdc = content.price_usdc / 1_000_000
-  const creatorName = content.creator_profiles?.display_name || "Unknown Creator"
+  const creatorName = content.creator_profiles?.display_name || "Unknown"
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6 animate-bounce-in">
       {/* Breadcrumb */}
       <Link
         href={`/${creatorName}`}
-        className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-[#b8a9d4] hover:text-[#e040a0] transition-colors"
       >
-        ← Back to {creatorName}
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to {creatorName}
       </Link>
 
       {/* Content info */}
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold">{content.title}</h1>
-        <div className="flex items-center gap-3 text-sm text-zinc-500">
-          <span>by {creatorName}</span>
-          <span>·</span>
-          <span className="capitalize">{content.content_type}</span>
-          {content.tags?.length > 0 && (
-            <>
-              <span>·</span>
-              <div className="flex gap-1">
-                {content.tags.slice(0, 3).map((tag: string) => (
-                  <span key={tag} className="px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 text-xs">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            </>
-          )}
+      <div className="space-y-3">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#faf5ff]">{content.title}</h1>
+        <div className="flex items-center flex-wrap gap-2 text-sm text-[#b8a9d4]">
+          <span className="font-medium">by {creatorName}</span>
+          <span className="text-[#3d2d5c]">·</span>
+          <span className="badge badge-purple capitalize">{content.content_type}</span>
+          {content.tags?.length > 0 && content.tags.slice(0, 3).map((tag: string) => (
+            <span key={tag} className="badge text-[10px] px-2.5 py-0.5 bg-[#1a1425] text-[#7a6b99] border border-[#2a1f3d]">
+              #{tag}
+            </span>
+          ))}
         </div>
       </div>
 
       {/* Description */}
       {content.description && (
-        <p className="text-zinc-400">{content.description}</p>
+        <p className="text-[#b8a9d4] leading-relaxed">{content.description}</p>
       )}
 
       {/* x402 Content Gate */}

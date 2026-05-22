@@ -9,13 +9,13 @@ export function WalletConnectButton() {
   if (address) {
     return (
       <div className="flex items-center gap-2">
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-sm text-zinc-300">
-          <div className="w-2 h-2 rounded-full bg-green-500" />
-          {shortAddress(address)}
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-[9999px] bg-[#1a1425] border border-[#2a1f3d] text-sm font-medium">
+          <div className="w-2 h-2 rounded-full bg-[#40c4ff] shadow-[0_0_6px_rgba(64,196,255,0.6)]" />
+          <span className="text-[#b8a9d4]">{shortAddress(address)}</span>
         </div>
         <button
           onClick={disconnect}
-          className="p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors"
+          className="p-2 rounded-[9999px] hover:bg-[#1a1425] text-[#7a6b99] hover:text-[#e040a0] transition-all duration-200"
         >
           <LogOut className="w-4 h-4" />
         </button>
@@ -27,7 +27,7 @@ export function WalletConnectButton() {
     <button
       onClick={connect}
       disabled={isConnecting}
-      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-medium hover:from-purple-500 hover:to-blue-500 transition-all disabled:opacity-50"
+      className="btn-pill btn-pink"
     >
       <Wallet className="w-4 h-4" />
       {isConnecting ? "Connecting..." : "Connect Wallet"}

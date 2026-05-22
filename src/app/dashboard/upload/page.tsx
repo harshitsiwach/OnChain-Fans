@@ -2,21 +2,27 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Upload, Image, Film, FileText, Music, Lock } from "lucide-react"
+import { Upload, Image, Film, FileText, Music, Lock, Sparkles } from "lucide-react"
+
+const contentTypeItems = [
+  { value: "image", label: "Image", icon: Image },
+  { value: "video", label: "Video", icon: Film },
+  { value: "audio", label: "Audio", icon: Music },
+  { value: "text", label: "Text", icon: FileText },
+]
 
 export default function UploadPage() {
   const router = useRouter()
   const [form, setForm] = useState({
-    title: "",
-    description: "",
-    contentType: "image",
-    priceUsdc: "",
-    tags: "",
-    previewUrl: "",
-    fileUrl: "",
+    title: "", description: "", contentType: "image", priceUsdc: "",
+    tags: "", previewUrl: "", fileUrl: "",
   })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState("")
+
+  function update(key: string, value: string) {
+    setForm(f => ({ ...f, [key]: value }))
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -56,138 +62,125 @@ export default function UploadPage() {
     }
   }
 
-  const contentTypeIcons: Record<string, React.ReactNode> = {
-    image: <Image className="w-5 h-5" />,
-    video: <Film className="w-5 h-5" />,
-    audio: <Music className="w-5 h-5" />,
-    text: <FileText className="w-5 h-5" />,
-  }
-
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="max-w-2xl mx-auto space-y-8 animate-bounce-in">
       <div>
-        <h1 className="text-2xl font-bold">Upload Content</h1>
-        <p className="text-zinc-500 mt-1">Monetize your content with x402 micropayments</p>
+        <h1 className="text-2xl font-bold gradient-pink-purple">Upload Content</h1>
+        <p className="text-[#b8a9d4] mt-1">Monetize your content with x402 micropayments on Arc</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Title */}
         <div className="space-y-2">
-          <label className="text-sm text-zinc-400">Title</label>
+          <label className="text-sm font-bold text-[#b8a9d4]">Title</label>
           <input
-            type="text"
-            required
+            type="text" required
             value={form.title}
-            onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-            className="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-600 focus:outline-none focus:border-pink-600 transition-colors"
+            onChange={e => update("title", e.target.value)}
+            className="input-pill"
             placeholder="Give your content a title..."
           />
         </div>
 
         {/* Description */}
         <div className="space-y-2">
-          <label className="text-sm text-zinc-400">Description</label>
+          <label className="text-sm font-bold text-[#b8a9d4]">Description</label>
           <textarea
             value={form.description}
-            onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+            onChange={e => update("description", e.target.value)}
             rows={3}
-            className="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-600 focus:outline-none focus:border-pink-600 transition-colors resize-none"
+            className="input-pill resize-none"
             placeholder="What's this about?"
           />
         </div>
 
         {/* Content type */}
         <div className="space-y-2">
-          <label className="text-sm text-zinc-400">Content Type</label>
+          <label className="text-sm font-bold text-[#b8a9d4]">Content Type</label>
           <div className="grid grid-cols-4 gap-2">
-            {[
-              { value: "image", label: "Image", icon: <Image className="w-5 h-5" /> },
-              { value: "video", label: "Video", icon: <Film className="w-5 h-5" /> },
-              { value: "audio", label: "Audio", icon: <Music className="w-5 h-5" /> },
-              { value: "text", label: "Text", icon: <FileText className="w-5 h-5" /> },
-            ].map((type) => (
-              <button
-                key={type.value}
-                type="button"
-                onClick={() => setForm(f => ({ ...f, contentType: type.value }))}
-                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all ${
-                  form.contentType === type.value
-                    ? "border-pink-600 bg-pink-600/10 text-pink-400"
-                    : "border-zinc-800 bg-zinc-900/50 text-zinc-500 hover:border-zinc-700"
-                }`}
-              >
-                {type.icon}
-                <span className="text-xs">{type.label}</span>
-              </button>
-            ))}
+            {contentTypeItems.map((type) => {
+              const Icon = type.icon
+              const isActive = form.contentType === type.value
+              return (
+                <button
+                  key={type.value}
+                  type="button"
+                  onClick={() => update("contentType", type.value)}
+                  className={`flex flex-col items-center gap-1.5 p-4 rounded-[16px] border transition-all duration-200 ${
+                    isActive
+                      ? "border-[#e040a0] bg-[#e040a0]/10 text-[#e040a0] shadow-lg shadow-[#e040a0]/10"
+                      : "border-[#2a1f3d] bg-[#1a1425] text-[#7a6b99] hover:border-[#3d2d5c] hover:text-[#b8a9d4]"
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="text-xs font-bold">{type.label}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
 
         {/* Price */}
         <div className="space-y-2">
-          <label className="text-sm text-zinc-400">Price (USDC)</label>
+          <label className="text-sm font-bold text-[#b8a9d4]">Price (USDC)</label>
           <div className="relative">
             <input
-              type="number"
-              step="0.01"
-              min="0"
+              type="number" step="0.01" min="0"
               value={form.priceUsdc}
-              onChange={e => setForm(f => ({ ...f, priceUsdc: e.target.value }))}
-              className="w-full px-4 py-3 pl-8 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-600 focus:outline-none focus:border-pink-600 transition-colors"
+              onChange={e => update("priceUsdc", e.target.value)}
+              className="input-pill pl-10"
               placeholder="0.00"
             />
-            <Lock className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Lock className="w-4 h-4 text-[#7a6b99] absolute left-4 top-1/2 -translate-y-1/2" />
           </div>
-          <p className="text-xs text-zinc-600">Set to 0 for free content</p>
+          <p className="text-xs text-[#7a6b99] font-medium">Set to 0 for free content</p>
         </div>
 
         {/* URLs */}
         <div className="space-y-2">
-          <label className="text-sm text-zinc-400">File URL (where the content is stored)</label>
+          <label className="text-sm font-bold text-[#b8a9d4]">File URL</label>
           <input
-            type="text"
-            value={form.fileUrl}
-            onChange={e => setForm(f => ({ ...f, fileUrl: e.target.value }))}
-            className="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-600 focus:outline-none focus:border-pink-600 transition-colors"
+            type="text" value={form.fileUrl}
+            onChange={e => update("fileUrl", e.target.value)}
+            className="input-pill"
             placeholder="https://arweave.net/... or /path/to/file"
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm text-zinc-400">Preview URL (blurred/low-res preview)</label>
+          <label className="text-sm font-bold text-[#b8a9d4]">Preview URL</label>
           <input
-            type="text"
-            value={form.previewUrl}
-            onChange={e => setForm(f => ({ ...f, previewUrl: e.target.value }))}
-            className="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-600 focus:outline-none focus:border-pink-600 transition-colors"
+            type="text" value={form.previewUrl}
+            onChange={e => update("previewUrl", e.target.value)}
+            className="input-pill"
             placeholder="https://..."
           />
         </div>
 
         {/* Tags */}
         <div className="space-y-2">
-          <label className="text-sm text-zinc-400">Tags (comma separated)</label>
+          <label className="text-sm font-bold text-[#b8a9d4]">Tags</label>
           <input
-            type="text"
-            value={form.tags}
-            onChange={e => setForm(f => ({ ...f, tags: e.target.value }))}
-            className="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-600 focus:outline-none focus:border-pink-600 transition-colors"
+            type="text" value={form.tags}
+            onChange={e => update("tags", e.target.value)}
+            className="input-pill"
             placeholder="exclusive, behind-the-scenes, nsfw"
           />
         </div>
 
-        {/* Submit */}
+        {/* Error */}
         {error && (
-          <div className="p-3 rounded-xl bg-red-900/30 border border-red-800 text-red-300 text-sm">
+          <div className="px-4 py-3 rounded-[16px] bg-[#e040a0]/10 border border-[#e040a0]/20 text-[#e040a0] text-sm font-medium">
             {error}
           </div>
         )}
 
+        {/* Submit */}
         <button
           type="submit"
           disabled={submitting || !form.title}
-          className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-medium hover:from-pink-500 hover:to-purple-500 transition-all disabled:opacity-50"
+          className="btn-pill btn-pink w-full justify-center text-base py-3.5"
         >
-          <Upload className="w-4 h-4" />
+          <Upload className="w-5 h-5" />
           {submitting ? "Publishing..." : "Publish Content"}
         </button>
       </form>
